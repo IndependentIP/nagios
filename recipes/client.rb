@@ -29,15 +29,17 @@ if node['nagios']['server_ips']
   node['nagios']['server_ips'].each { |ip| mon_host << ip }
 end
 
-if node.run_list.roles.include?(node['nagios']['server_role'])
-  mon_host << node['ipaddress']
-elsif node['nagios']['multi_environment_monitoring']
-  search(:node, "role:#{node['nagios']['server_role']}") do |n|
-    mon_host << n['ipaddress']
-  end
-else
-  search(:node, "role:#{node['nagios']['server_role']} AND chef_environment:#{node.chef_environment}") do |n|
-    mon_host << n['ipaddress']
+unless Chef::Config[:solo]
+  if node.run_list.roles.include?(node['nagios']['server_role'])
+    mon_host << node['ipaddress']
+  elsif node['nagios']['multi_environment_monitoring']
+    search(:node, "role:#{node['nagios']['server_role']}") do |n|
+      mon_host << n['ipaddress']
+    end
+  else
+    search(:node, "role:#{node['nagios']['server_role']} AND chef_environment:#{node.chef_environment}") do |n|
+      mon_host << n['ipaddress']
+    end
   end
 end
 
