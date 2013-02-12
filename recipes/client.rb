@@ -25,6 +25,10 @@
 # determine hosts that NRPE will allow monitoring from
 mon_host = ['127.0.0.1']
 
+if node['nagios']['server_ips']
+  node['nagios']['server_ips'].each { |ip| mon_host << ip }
+end
+
 if node.run_list.roles.include?(node['nagios']['server_role'])
   mon_host << node['ipaddress']
 elsif node['nagios']['multi_environment_monitoring']
