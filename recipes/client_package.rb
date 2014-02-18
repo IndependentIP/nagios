@@ -19,8 +19,8 @@
 #
 
 %w{
-  nagios-nrpe-server
   nagios-plugins-basic
+  nagios-nrpe-server
 }.each do |pkg|
   package pkg
 end
